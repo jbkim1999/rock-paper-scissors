@@ -1,3 +1,15 @@
+const button0 = document.querySelector("#button-0");
+const button1 = document.querySelector("#button-1");
+const button2 = document.querySelector("#button-2");
+const buttonNew = document.querySelector("#button-new");
+const scoreBoard = document.querySelector('#scoreBoard');
+const result = document.querySelector('#result');
+
+button0.addEventListener('click', () => playRound(0, computerPlay()));
+button1.addEventListener('click', () => playRound(1, computerPlay()));
+button2.addEventListener('click', () => playRound(2, computerPlay()));
+buttonNew.addEventListener('click', () => Game.startOver());
+
 function computerPlay() {
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -5,70 +17,91 @@ function computerPlay() {
   return getRandomInt(3); // 0 - rock; 1 - paper; 2 - scissors
 }
 
-function playerPlay() {
-  const result = window.prompt("What are you going to play?");
-  if (result.toLowerCase() === "rock") {
-    return 0;
-  } else if (result.toLowerCase() === "paper") {
-    return 1;
-  } else if (result.toLowerCase() === "scissors") {
-    return 2;
-  } else {
-    console.log("Please enter a valid option!");
-    return playerPlay();
-  }
-}
-
 function playRound(playerSelection, computerSelection) {
   if (playerSelection === computerSelection) {
-    return "It's a tie!";
+    scoreBoard.textContent = Game.currentScore();
+    result.textContent = "It's a tie.";
   }
   else if (playerSelection === 0) {
     if (computerSelection === 1) {
-      return "You lost!";
+      Game.computerWin();
+      scoreBoard.textContent = Game.currentScore();
+      result.textContent = "You lost this round... ";
+      Game.checkWin();
     } else {
-      return "You won!";
+      Game.playerWin();
+      scoreBoard.textContent = Game.currentScore();
+      result.textContent = "Yon won this round!";
+      Game.checkWin();
     }
   }
   else if (playerSelection === 1) {
     if (computerSelection === 2) {
-      return "You lost!";
+      Game.computerWin();
+      scoreBoard.textContent = Game.currentScore();
+      result.textContent = "You lost this round... ";
+      Game.checkWin();
     } else {
-      return "You won!";
+      Game.playerWin();
+      scoreBoard.textContent = Game.currentScore();
+      result.textContent = "Yon won this round!";
+      Game.checkWin();
     }
   }
   else {
     if (computerSelection === 0) {
-      return "You lost!";
+      Game.computerWin();
+      scoreBoard.textContent = Game.currentScore();
+      result.textContent = "You lost this round... ";
+      Game.checkWin();
     } else {
-      return "You won!";
+      Game.playerWin();
+      scoreBoard.textContent = Game.currentScore();
+      result.textContent = "Yon won this round!";
+      Game.checkWin();
     }
   }
 }
 
-function game() {
-  const howMany = prompt("How many games do you wish to play?");
-  let playerScore = 0;
-  let computerScore = 0;
-  for (let i = 0; i < howMany; i++) {
-    const playerInput = playerPlay();
-    const computerInput = computerPlay();
-    const result = playRound(playerInput, computerInput);
-    console.log(`round ${i + 1}: ` + result);
-    if (result === "You won!") {
-      playerScore++;
-    } else if (result === "You lost!") {
-      computerScore++;
+const Game = (() => {
+  let playerPoint = 0;
+  let computerPoint = 0;
+  result.textContent = "Welcome to the game!";
+
+  const playerWin = () => playerPoint++;
+  const computerWin = () => computerPoint++;
+
+  const currentScore = () => {
+    return `Current score: ${playerPoint} vs. ${computerPoint}`;
+  }
+  
+  const checkWin = () => {
+    if (playerPoint === 3) {
+      result.textContent = "You won the game... should be obvious";
+      reset();
+    } else if (computerPoint === 3) {
+      result.textContent = "How can you lose to a computer?";
+      reset();
     }
   }
-  if (playerScore > computerScore) {
-    return "You defeated the computer!";
-  } else if (playerScore < computerScore) {
-    return "How can you lose to a computer?"; 
-  } else {
-    return "You guys tied."
+
+  const reset = () => {
+    playerPoint = 0;
+    computerPoint = 0;
   }
-}
 
+  const startOver = () => {
+    reset();
+    result.textContent = "Game refreshed.";
+    scoreBoard.textContent = "";
+  }
 
-
+  return {
+    currentScore,
+    playerWin,
+    computerWin,
+    checkWin,
+    reset,
+    startOver
+  }
+})();
