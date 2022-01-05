@@ -63,6 +63,7 @@ function playRound(playerSelection, computerSelection) {
   }
 }
 
+// IIFE
 const Game = (() => {
   let playerPoint = 0;
   let computerPoint = 0;
